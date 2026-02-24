@@ -4,12 +4,8 @@ return {
     terminal = {
       win = {
         position = "bottom",
-        height = 0.3,
-        border = "rounded",
-        wo = {
-          winblend = 15,
-          winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
-        },
+        height = 10,
+        border = "none",
       },
     },
   },

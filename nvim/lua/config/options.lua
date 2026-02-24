@@ -1,6 +1,3 @@
-vim.opt.winblend = 15
-vim.opt.pumblend = 15
-
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 vim.opt.updatetime = 250
