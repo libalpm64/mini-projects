@@ -1,0 +1,8 @@
+vim.keymap.set("n", "dd", '"_dd', { desc = "Delete line without yanking" })
+vim.keymap.set("n", "D", '"_D', { desc = "Delete to end of line without yanking" })
+vim.keymap.set("n", "d", '"_d', { desc = "Delete without yanking" })
+vim.keymap.set("v", "d", '"_d', { desc = "Delete without yanking" })
+vim.keymap.set("v", "x", '"_x', { desc = "Delete character without yanking" })
+vim.keymap.set("n", "x", '"_x', { desc = "Delete character without yanking" })
+vim.keymap.set("n", "X", 'dd', { desc = "Cut line" })
+vim.keymap.set("v", "X", 'd', { desc = "Cut selection" })
