@@ -1,0 +1,8 @@
+{
+    "workspace.library": [
+        "${3rd}/luv/library"
+    ],
+    "runtime.version": "LuaJIT",
+    "diagnostics.globals": ["mp", "utils", "msg", "assdraw", "opt", "osd", "config", "state", "options", "serialization_path", "QUARTER_PI_SIN", "defaults", "it", "fzy", "cursor"],
+    "workspace.checkThirdParty": false
+}
