@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Cookie Protection</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #e0e0e0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            min-height: 100vh;
+        }
+        h1, h2, h3, h4 {
+            color: #00bcd4;
+            border-bottom: 2px solid #2d2d2d;
+            padding-bottom: 0.3em;
+            text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        }
+        .container {
+            background: rgba(18, 18, 18, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #2d2d2d;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: rgba(0, 188, 212, 0.1);
+            color: #00bcd4;
+        }
+        .highlight {
+            background: rgba(30, 30, 30, 0.2);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid rgba(0, 188, 212, 0.2);
+s        }
+        strong {
+            color: #00bcd4;
+            text-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #2d2d2d;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced Cookie Protection</h1>
+        
+        <p>Cookies can be stolen by threat actors and used to bypass two-factor authentication (2FA). This write-up outlines a method to make session hijacking <strong>extremely difficult</strong> unless the request originates from the user's network. The model and design can be polymorphic and implemented in multiple ways with different approaches.</p>
+
+        <h2>How Sessions Are Made</h2>
+        <p>Sessions are hashed and stored as browser cookies that uniquely identify a device, allowing the server to validate a user's identity.</p>
+        
+        <p>In most cases, the session is only stored in the database and does not require frequent re-authentication. This is because running a cryptographic algorithm for every request to verify the session would be computationally expensive. Instead, the system simply checks if the cookie matches the one stored in the database and verifies the expiration timestamp. This removes the need to rehash or decrypt the session until the cookie naturally expires.</p>
+
+        <p>However, if an attacker replaces the cookie, they could potentially gain unauthorized access to the account using malware or other means.</p>
+
+        <p>With this system, if an attacker attempts to use the session from an unauthorized IP address, the session is considered invalid, forcing a full re-authentication.</p>
+
+        <h2>Database Setup</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>User Associated</th>
+                <th>Session Cookie</th>
+                <th>Time Created</th>
+                <th>Cookie Expiry</th>
+                <th>Session Cookie IP</th>
+                <th>Mobile Device ID (Optional)</th>
+            </tr>
+            <tr>
+                <td>UserID</td>
+                <td>Username</td>
+                <td>(Secure Hash / HMAC)</td>
+                <td>(Unix Timestamp)</td>
+                <td>(Unix Timestamp)</td>
+                <td>(IPv4/IPv6 Format)</td>
+                <td>(Mobile Device UID)</td>
+            </tr>
+        </table>
+
+        <h2>Social Media</h2>
+        <p>Social media platforms present a challenge for <strong>IP-based security</strong> due to frequent travel and mobile network changes. However, solutions exist:</p>
+
+        <div class="highlight">
+            <h3>Mobile Override</h3>
+            <ul>
+                <li>Implement <strong>hardware-based identification (HWID)</strong> for mobile devices</li>
+                <li>Update: This could include a file tailored specifically for that mobile device (for example, an encryption key stored on the device), so it doesn't have to rely on a mobile device identifier that could be used for malicious or tracking purposes.</li>
+                <li>The mobile cookie flag should <strong>only be applied on mobile devices</strong> and remain separate from desktop-based authentication</li>
+                <li>Since mobile devices are <strong>generally more secure than desktops</strong>, we assume they are not compromised</li>
+                <li>The session should <strong>only request for reauthenication if the HWID does not match</strong>, avoiding the need for constant IP lookups via <strong>MaxMind</strong> or similar services</li>
+                <li>Previous sessions should still be able to access them until the expiration window is over, which allows older sessions to remain functional if the IP address still matches or the mobile device identifier is the same</li>
+            </ul>
+
+            <h3>Tracking IP Changes</h3>
+            <p>Most social media platforms already <strong>log IP changes</strong> for security and legal reasons. This system can <strong>leverage existing logic</strong> to enhance security without major infrastructure changes:</p>
+            <ul>
+                <li><strong>ISP-Based Tracking:</strong> If a user is on a <strong>mobile hotspot</strong> and traveling, the ASN (Autonomous System Number) will likely remain the same and the IP changes slightly</li>
+                <li><strong>Subnet Range Monitoring:</strong> Instead of invalidating sessions <strong>immediately</strong> upon an IP change, monitor for range changes within a <strong>/16 subnet</strong> (or a reasonable threshold)</li>
+                <li><strong>Geolocation Awareness:</strong> If a user travels <strong>500+ Kilometers/miles</strong> and connects via a <strong>different ISP</strong>, require re-authentication or <strong>2FA</strong> to confirm the login</li>
+            </ul>
+        </div>
+
+        <h2>Key Notes</h2>
+        <div class="highlight">
+            <p>This security model could be used as an <strong>optional layer of advanced threat protection</strong>, ensuring only you can access your account while also allowing them to disable this option.</p>
+            
+            <p>This is also separate from the actual session itself. The validation occurs <strong>before the session</strong> is even checked. This means we are verifying IP address changes <strong>before</strong> the session logic, meaning it doesn't alter your existing session or require decryption of the session cookie. The IP address is <strong>not embedded in the cookie</strong>, rather it is stored in the database and checked against the session cookie.</p>
+            
+            <p>For <strong>managers</strong> or those who need more control over their accounts in different locations, this may require the use of a <strong>VPN</strong> to access their social media accounts or a way to add <strong>trusted IP addresses</strong>. The system should prompt for <strong>2FA</strong> whenever adding a trusted IP address in order to ensure the safety of the account. This would also allow them to <strong>work securely</strong> without being caught in the crossfire of the advanced cookie protection.</p>
+        </div>
+
+        <h3>Dashboard Example</h3>
+        <div class="highlight">
+            <p><strong>Trusted IPs Management</strong></p>
+            <ul>
+                <li>Add a trusted IP</li>
+                <li>Select IP (or click for the current location)</li>
+                <li>Save</li>
+                <li>(Please enter your 2FA code in order to save)</li>
+            </ul>
+        </div>
+
+        <h2>Law Enforcement</h2>
+        <p>While this system enhances security, it could also create complications for <strong>law enforcement</strong>. Without access to the <strong>user's IP network</strong>, <strong>law enforcement</strong> may not be able to log in to an account, which could present legal challenges. To address this, it may be necessary to allow the addition of a <strong>trusted IP address</strong> that would <strong>legally</strong> grant access to law enforcement, as it is illegal to withhold data in criminal investigations, especially those involving time-sensitive matters.</p>
+
+        <h2>Conclusion</h2>
+        <p>This system ensures that stolen session cookies are essentially useless without the correct <strong>IP address</strong>, <strong>device</strong>, or <strong>location</strong>, making <strong>session hijacking extremely difficult</strong>. It provides a high level of security while remaining adaptable for <strong>social media platforms</strong> and other niche use cases.</p>
+        <p>Published on: 3/28/2025</p>
+        <p>Updated at: N/A</p>
+    </div>
+</body>
+</html>
