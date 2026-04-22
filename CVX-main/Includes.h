@@ -1,0 +1,12 @@
+#include <regex>
+#include <iostream>
+#include <ntstatus.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <windows.h>
+#include <tlhelp32.h>
+#include <string>
+#include <winhttp.h>
+#include <locale.h>
+#include "functions.h"
+#include <sddl.h>

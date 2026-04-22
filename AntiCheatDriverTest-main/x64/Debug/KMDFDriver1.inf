@@ -1,0 +1,53 @@
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318}
+Provider=%ManufacturerName%
+DriverVer = 12/09/2024,11.8.13.113
+CatalogFile=AnticheatDriverTest.cat
+PnpLockdown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+AnticheatDriverTest_Device_CoInstaller_CopyFiles = 11
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+AnticheatDriverTest.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTamd64
+
+[Standard.NTamd64]
+%AnticheatDriverTest.DeviceDesc%=AnticheatDriverTest_Device, Root\AnticheatDriverTest
+
+[AnticheatDriverTest_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+AnticheatDriverTest.sys
+
+;-------------- Service installation
+[AnticheatDriverTest_Device.NT.Services]
+AddService = AnticheatDriverTest,%SPSVCINST_ASSOCSERVICE%, AnticheatDriverTest_Service_Inst
+
+; -------------- driver install sections
+[AnticheatDriverTest_Service_Inst]
+DisplayName    = %AnticheatDriverTest.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\AnticheatDriverTest.sys
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Your Company Name"
+DiskName = "AnticheatDriverTest Installation Disk"
+AnticheatDriverTest.DeviceDesc = "AnticheatDriverTest Device"
+AnticheatDriverTest.SVCDESC = "AnticheatDriverTest Service"

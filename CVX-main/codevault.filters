@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Security">
+      <UniqueIdentifier>{9b400aca-fe29-4d12-b691-09ed109698f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Security\Anitdbg">
+      <UniqueIdentifier>{646e6a55-aab6-414f-a065-cf6ef3ea50f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Security\Encryption">
+      <UniqueIdentifier>{4d99cbbf-5019-4866-8db8-988c54fcf8c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Security\Auth">
+      <UniqueIdentifier>{6191eea7-c232-4bc2-8e48-d967271e32b2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CodeVualt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="oxorany.cpp">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Imports.h">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy.h">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="obfusheader.h">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="oxorany.h">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="oxorany_include.h">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="CodeVualt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="antidbg.h">
+      <Filter>Header Files\Security\Anitdbg</Filter>
+    </ClInclude>
+    <ClInclude Include="integ.h">
+      <Filter>Header Files\Security\Anitdbg</Filter>
+    </ClInclude>
+    <ClInclude Include="spoof.h">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="peb.h">
+      <Filter>Header Files\Security\Anitdbg</Filter>
+    </ClInclude>
+    <ClInclude Include="hash.h">
+      <Filter>Header Files\Security\Anitdbg</Filter>
+    </ClInclude>
+    <ClInclude Include="functions.h">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="auth_header.h">
+      <Filter>Header Files\Security\Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>Header Files\Security\Encryption</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Auth.lib">
+      <Filter>Header Files\Security\Auth</Filter>
+    </Library>
+    <Library Include="libcurl.lib">
+      <Filter>Header Files\Security\Auth</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

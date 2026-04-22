@@ -1,0 +1,26 @@
+﻿  Building 'AnticheatDriverTest' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
+  Stamping x64\Debug\KMDFDriver1.inf
+  Stamping [Version] section with DriverVer=12/09/2024,11.8.13.113
+  Device.c
+  Driver.c
+  Queue.c
+  Generating Code...
+  AnticheatDriverTest.vcxproj -> C:\Users\SERVER-PC\source\repos\KMDF Driver1\x64\Debug\AnticheatDriverTest.sys
+  Done Adding Additional Store
+  Successfully signed: C:\Users\SERVER-PC\source\repos\KMDF Driver1\x64\Debug\AnticheatDriverTest.sys
+  
+  Driver is 'Universal'.
+  .........................
+  Signability test complete.
+  
+  Errors:
+  None
+  
+  Warnings:
+  None
+  
+  Catalog generation complete.
+  C:\Users\SERVER-PC\source\repos\KMDF Driver1\x64\Debug\AnticheatDriverTest\anticheatdrivertest.cat
+  Done Adding Additional Store
+  Successfully signed: C:\Users\SERVER-PC\source\repos\KMDF Driver1\x64\Debug\AnticheatDriverTest\anticheatdrivertest.cat
+  
