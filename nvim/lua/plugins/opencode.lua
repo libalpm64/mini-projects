@@ -13,56 +13,88 @@ return {
   config = function()
     vim.o.autoread = true
     local default_width = 0.4
-
-    vim.g.opencode_opts = {
-      provider = {
-        terminal = {
-          split = "right",
-          width = math.floor(vim.o.columns * default_width),
-        },
-        snacks = {
-          auto_close = true,
-          win = {
-            position = "right",
-            width = default_width,
-            enter = false,
-          },
-        },
-      },
-    }
-
     local current_width = default_width
 
-    local function find_opencode_win()
-      for _, win in ipairs(vim.api.nvim_list_wins()) do
-        local buf = vim.api.nvim_win_get_buf(win)
-        local ft = vim.api.nvim_buf_get_option(buf, "filetype")
-        if ft == "opencode_terminal" or ft == "snacks_terminal" then
-          local name = vim.api.nvim_buf_get_name(buf)
-          if name:match("opencode") then
-            return win
-          end
+    local term_bufnr = nil
+    local term_winid = nil
+
+    local function start_server()
+      local width = math.floor(vim.o.columns * current_width)
+      local prev_win = vim.api.nvim_get_current_win()
+
+      term_bufnr = vim.api.nvim_create_buf(true, false)
+
+      -- botright vsplit forces the window to the far right, unlike
+      -- nvim_open_win's split="right" which depends on current window layout
+      vim.cmd("botright vsplit")
+      vim.api.nvim_win_set_buf(0, term_bufnr)
+      vim.api.nvim_win_set_width(0, width)
+      term_winid = vim.api.nvim_get_current_win()
+
+      require("opencode.terminal").setup(term_winid)
+
+      vim.fn.jobstart("opencode --port", {
+        term = true,
+        on_exit = function()
+          term_winid = nil
+          term_bufnr = nil
+        end,
+      })
+
+      vim.api.nvim_set_current_win(prev_win)
+    end
+
+    local function stop_server()
+      local job_id = term_bufnr and vim.b[term_bufnr].terminal_job_id
+      if job_id then vim.fn.jobstop(job_id) end
+      if term_winid and vim.api.nvim_win_is_valid(term_winid) then
+        vim.api.nvim_win_close(term_winid, true)
+      end
+      if term_bufnr and vim.api.nvim_buf_is_valid(term_bufnr) then
+        vim.api.nvim_buf_delete(term_bufnr, { force = true })
+      end
+      term_winid = nil
+      term_bufnr = nil
+    end
+
+    local function toggle_server()
+      if term_bufnr == nil then
+        start_server()
+      else
+        if term_winid ~= nil and vim.api.nvim_win_is_valid(term_winid) then
+          vim.api.nvim_win_hide(term_winid)
+          term_winid = nil
+        elseif term_bufnr ~= nil and vim.api.nvim_buf_is_valid(term_bufnr) then
+          local prev_win = vim.api.nvim_get_current_win()
+          vim.cmd("botright vsplit")
+          vim.api.nvim_win_set_buf(0, term_bufnr)
+          vim.api.nvim_win_set_width(0, math.floor(vim.o.columns * current_width))
+          term_winid = vim.api.nvim_get_current_win()
+          vim.api.nvim_set_current_win(prev_win)
         end
       end
-      return nil
     end
+
+    vim.g.opencode_opts = {
+      server = {
+        port = 4096,
+        start = start_server,
+        stop = stop_server,
+        toggle = toggle_server,
+      },
+    }
 
     local function resize_opencode(size)
       if not size then return end
       local width = size / 100
       current_width = width
-      vim.g.opencode_opts.provider.snacks.win.width = width
-      vim.g.opencode_opts.provider.terminal.width = math.floor(vim.o.columns * width)
-      local win = find_opencode_win()
-      if win then
-        local new_width = math.floor(vim.o.columns * width)
-        vim.api.nvim_win_set_width(win, new_width)
+      if term_winid and vim.api.nvim_win_is_valid(term_winid) then
+        vim.api.nvim_win_set_width(term_winid, math.floor(vim.o.columns * width))
       end
     end
 
     local function smart_toggle()
-      local win = find_opencode_win()
-      if win then
+      if term_bufnr ~= nil and vim.api.nvim_buf_is_valid(term_bufnr) then
         require("opencode").stop()
         vim.system({ "pkill", "-f", "opencode" }, { detach = true })
         vim.system({ "pkill", "-f", "gopls.*opencode" }, { detach = true })
